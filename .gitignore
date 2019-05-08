@@ -2,8 +2,11 @@ packages
 
 #ignore thumbnails created by windows
 Thumbs.db
+#ignore files created by osx
+**/.DS_Store
 #Ignore files build by Visual Studio
-*.obj
+**/*.obj
+**/obj/
 *.pdb
 *.user
 *.aps
