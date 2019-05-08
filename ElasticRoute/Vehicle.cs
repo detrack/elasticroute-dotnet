@@ -1,24 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Detrack.ElasticRoute
 {
+    [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
     public class Vehicle
     {
-        private string depot;
-        private string name;
-        private int priority = 1;
-        private float weight_capacity;
-        private float volume_capacity;
-        private float seating_capacity;
-        private int buffer;
-        private string avail_from;
-        private string avail_till;
-        private bool return_to_depot = false;
-        private List<string> vehicle_types;
+        private string _name;
+        private float? _weight_capacity;
+        private float? _volume_capacity;
+        private float? _seating_capacity;
+        public string Depot { get; set;}
         public string Name
         {
-            get { return name; }
+            get { return _name; }
             set
             {
                 if (value == null || value.Trim() == "")
@@ -30,53 +27,53 @@ namespace Detrack.ElasticRoute
                 }
                 else
                 {
-                    name = value;
+                    _name = value;
                 }
             }
         }
         public int Priority { get; set; }
-        public float WeightCapacity
+        public float? WeightCapacity
         {
-            get { return weight_capacity; }
+            get { return _weight_capacity; }
             set
             {
-                if (value < 0)
+                if (value.HasValue && value < 0)
                 {
-                    throw new BadFieldException("Vehicle weight_capacity cannot be null");
+                    throw new BadFieldException("Vehicle WeightCapacity cannot be negative");
                 }
                 else
                 {
-                    weight_capacity = value;
+                    _weight_capacity = value;
                 }
             }
         }
-        public float VolumeCapacity
+        public float? VolumeCapacity
         {
-            get { return volume_capacity; }
+            get { return _volume_capacity; }
             set
             {
-                if (value < 0)
+                if (value.HasValue && value < 0)
                 {
-                    throw new BadFieldException("Vehicle volume_capacity cannot be null");
+                    throw new BadFieldException("Vehicle VolumeCapacity cannot be negative");
                 }
                 else
                 {
-                    volume_capacity = value;
+                    _volume_capacity = value;
                 }
             }
         }
-        public float SeatingCapacity
+        public float? SeatingCapacity
         {
-            get { return seating_capacity; }
+            get { return _seating_capacity; }
             set
             {
-                if (value < 0)
+                if (value.HasValue && value < 0)
                 {
-                    throw new BadFieldException("Vehicle seating_capacity cannot be null");
+                    throw new BadFieldException("Vehicle SeatingCapacity cannot be negative");
                 }
                 else
                 {
-                    seating_capacity = value;
+                    _seating_capacity = value;
                 }
             }
         }

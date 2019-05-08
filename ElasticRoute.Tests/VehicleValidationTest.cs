@@ -84,9 +84,9 @@ namespace Tests
         }
 
         [Test]
-        public void TestPositiveNumericFields([Values("WeightCapacity", "VolumeCapacity", "SeatingCapacity")] string field, float value = -100f)
+        public void TestPositiveNumericFields([Values("WeightCapacity", "VolumeCapacity", "SeatingCapacity")] string field)
         {
-            string[] fields = {  };
+            float value = -100f; 
             List<Vehicle> vehicles = new List<Vehicle>
             {
                 this.CreateVehicle(),
@@ -95,11 +95,12 @@ namespace Tests
             try
             {
                 vehicles[1].GetType().GetProperty(field).SetValue(vehicles[1], value);
-                Assert.Fail();
+                Assert.Fail("No exception was thrown");
             }
-            catch (BadFieldException ex)
+            catch (TargetInvocationException ex)
             {
-                Assert.AreEqual($"Vehicle {field} cannot be negative", ex.Message);
+                Assert.IsInstanceOf(typeof(BadFieldException), ex.InnerException);
+                Assert.AreEqual($"Vehicle {field} cannot be negative", ex.InnerException.Message);
             }
         }
     }
