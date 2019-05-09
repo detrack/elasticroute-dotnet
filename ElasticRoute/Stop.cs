@@ -5,7 +5,7 @@ using Newtonsoft.Json.Serialization;
 
 namespace Detrack.ElasticRoute
 {
-    [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
+    [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy), ItemNullValueHandling = NullValueHandling.Ignore)]
     public class Stop
     {
         private string _name;
@@ -20,7 +20,7 @@ namespace Detrack.ElasticRoute
             get { return _name; }
             set
             {
-                if (value == null || value.Trim() == "")
+                if (string.IsNullOrWhiteSpace(value))
                 {
                     throw new BadFieldException("Stop name cannot be null");
                 }
@@ -85,13 +85,13 @@ namespace Detrack.ElasticRoute
         public float? ServiceTime {get; set;}
         public float? Lat {get; set;}
         public float? Lng {get; set;}
-        public string From {get; set;}
-        public string Till {get; set;}
-        public string AssignTo {get; set;}
-        public string Run {get; set;}
-        public string Sequence {get; set;}
-        public string Eta {get; set;}
-        public string Exception {get; set;}
+        public uint? From {get; set;}
+        public uint? Till {get; set;}
+        public string AssignTo {get; private set;}
+        public uint Run {get; private set;}
+        public uint Sequence {get; private set;}
+        public string Eta {get; private set;}
+        public string Exception {get; private set;}
 
         public Stop()
         {

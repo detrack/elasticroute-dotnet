@@ -5,7 +5,7 @@ using Newtonsoft.Json.Serialization;
 
 namespace Detrack.ElasticRoute
 {
-    [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
+    [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy), ItemNullValueHandling = NullValueHandling.Ignore)]
     public class Vehicle
     {
         private string _name;
@@ -78,9 +78,9 @@ namespace Detrack.ElasticRoute
             }
         }
         public int Buffer { get; set; }
-        public string AvailFrom { get; set; }
-        public string AvailTill { get; set; }
-        public string ReturnToDepot { get; set; }
+        public uint? AvailFrom { get; set; }
+        public uint? AvailTill { get; set; }
+        public bool? ReturnToDepot { get; set; }
         public List<string> VehicleTypes { get; set; }
 
 

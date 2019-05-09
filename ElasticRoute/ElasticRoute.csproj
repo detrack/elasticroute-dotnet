@@ -1,7 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <Title>ElasticRoute</Title>
+    <Description>A .NET library to interface with the ElasticRoute API</Description>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <OutputType>Library</OutputType>
+    <PackageId>ElasticRoute</PackageId>
+    <PackageTags>dotnet;elasticroute;api</PackageTags>
   </PropertyGroup>
   <ItemGroup>
         <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
