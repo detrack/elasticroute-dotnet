@@ -14,8 +14,7 @@ namespace Tests
 
         public Depot CreateDepot(string testName = null, [System.Runtime.CompilerServices.CallerMemberName] string memberName = "")
         {
-            Depot depot = new Depot();
-            depot.Name = testName ?? memberName + System.DateTime.Now.Ticks;
+            string depotName = testName ?? memberName + System.DateTime.Now.Ticks;
             string[] testAddresses =
             { "61 Kaki Bukit Ave 1 #04-34, Shun Li Ind Park Singapore 417943",
             "8 Somapah Road Singapore 487372",
@@ -24,7 +23,8 @@ namespace Tests
             "10 Bayfront Avenue Singapore 018956",
             "18 Marina Gardens Drive Singapore 018953"
             };
-            depot.Address = testAddresses[rng.Next(testAddresses.Length)];
+            string depotAddress = testAddresses[rng.Next(testAddresses.Length)];
+            Depot depot = new Depot(depotName, depotAddress);
             return depot;
         }
         [SetUp]
@@ -74,10 +74,9 @@ namespace Tests
         [Test]
         public void TestNamesCannotBeNull([Values(null, "", " ")]string testName)
         {
-            Depot depot = new Depot();
             try
             {
-                depot.Name = null;
+                Depot depot = new Depot(null, "8 Somapah Road");
                 Assert.Fail("No exception was thrown");
             }
             catch (BadFieldException ex)
@@ -90,10 +89,9 @@ namespace Tests
         public void TestNamesCannotBeLongerThan255Chars()
         {
             string longName = new string('A', 256);
-            Depot depot = new Depot();
             try
             {
-                depot.Name = longName;
+                Depot depot = new Depot(longName, "8 Somapah Road");
                 Assert.Fail("No exception was thrown");
             }
             catch (BadFieldException ex)

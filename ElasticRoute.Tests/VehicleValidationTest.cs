@@ -8,8 +8,7 @@ namespace Tests
     {
         public Vehicle CreateVehicle(string testName = null, [System.Runtime.CompilerServices.CallerMemberName] string memberName = "")
         {
-            Vehicle vehicle = new Vehicle();
-            vehicle.Name = testName ?? memberName + System.DateTime.Now.Ticks;
+            Vehicle vehicle = new Vehicle(testName ?? memberName + System.DateTime.Now.Ticks);
             return vehicle;
         }
         [SetUp]
@@ -58,8 +57,8 @@ namespace Tests
         [Test]
         public void TestNamesCannotBeNull([Values(null,""," ")]string testName)
         {
-            Vehicle vehicle = new Vehicle();
             try { 
+                Vehicle vehicle = new Vehicle("");
                 vehicle.Name = null;
                 Assert.Fail("No exception was thrown");
             }catch(BadFieldException ex)
@@ -72,10 +71,9 @@ namespace Tests
         public void TestNamesCannotBeLongerThan255Chars()
         {
             string longName = new string('A', 256);
-            Vehicle vehicle = new Vehicle();
             try
             {
-                vehicle.Name = longName;
+                Vehicle vehicle = new Vehicle(longName);
                 Assert.Fail("No exception was thrown");
             }catch(BadFieldException ex)
             {

@@ -14,8 +14,7 @@ namespace Tests
 
         public Stop CreateStop(string testName = null, [System.Runtime.CompilerServices.CallerMemberName] string memberName = "")
         {
-            Stop stop = new Stop();
-            stop.Name = testName ?? memberName + System.DateTime.Now.Ticks;
+            string stopName = testName ?? memberName + System.DateTime.Now.Ticks;
             string[] testAddresses =
             { "61 Kaki Bukit Ave 1 #04-34, Shun Li Ind Park Singapore 417943",
             "8 Somapah Road Singapore 487372",
@@ -24,7 +23,8 @@ namespace Tests
             "10 Bayfront Avenue Singapore 018956",
             "18 Marina Gardens Drive Singapore 018953"
             };
-            stop.Address = testAddresses[rng.Next(testAddresses.Length)];
+            string stopAddress = testAddresses[rng.Next(testAddresses.Length)];
+            Stop stop = new Stop(stopName, stopAddress);
             return stop;
         }
         [SetUp]
@@ -74,9 +74,9 @@ namespace Tests
         [Test]
         public void TestNamesCannotBeNull([Values(null, "", " ")]string testName)
         {
-            Stop stop = new Stop();
             try
             {
+                Stop stop = new Stop("", "");
                 stop.Name = null;
                 Assert.Fail("No exception was thrown");
             }
@@ -90,10 +90,9 @@ namespace Tests
         public void TestNamesCannotBeLongerThan255Chars()
         {
             string longName = new string('A', 256);
-            Stop stop = new Stop();
             try
             {
-                stop.Name = longName;
+                Stop stop = new Stop(longName, "");
                 Assert.Fail("No exception was thrown");
             }
             catch (BadFieldException ex)
@@ -132,19 +131,6 @@ namespace Tests
             }catch(BadFieldException ex){
                 Assert.AreEqual("Stop address and coordinates are not given", ex.Message);
             }
-        }
-
-        [Test]
-        public void TestSerial()
-        {
-            Stop stop = new Stop();
-            stop.Address = "8 Somapah Road";
-            stop.WeightLoad = 100;
-            stop.Depot = "Nani";
-            stop.Name = "SUTD";
-            string json = JsonConvert.SerializeObject(stop);
-            Console.WriteLine(json);
-            Assert.Pass();
         }
 
         [Test]
