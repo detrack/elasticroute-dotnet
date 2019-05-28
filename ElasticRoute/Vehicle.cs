@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -78,10 +79,22 @@ namespace Detrack.ElasticRoute
             }
         }
         public int Buffer { get; set; }
-        public uint? AvailFrom { get; set; }
-        public uint? AvailTill { get; set; }
+        public int? AvailFrom { get; set; }
+        public int? AvailTill { get; set; }
         public bool? ReturnToDepot { get; set; }
         public List<string> VehicleTypes { get; set; }
+
+        [JsonConstructor]
+        public Vehicle(string name)
+        {
+            this.Name = name;
+        }
+
+        public Vehicle(string name, string depot)
+        {
+            this.Name = name;
+            this.Depot = depot;
+        }
 
 
         public static bool ValidateVehicles(List<Vehicle> vehicles)
@@ -99,6 +112,32 @@ namespace Detrack.ElasticRoute
                 }
             }
             return true;
+        }
+
+        public Vehicle Clone()
+        {
+            string json = JsonConvert.SerializeObject(this);
+            return JsonConvert.DeserializeObject<Vehicle>(json);
+        }
+
+        public void Absorb(Vehicle other)
+        {
+            PropertyInfo[] properties = other.GetType().GetProperties();
+            foreach(PropertyInfo property in properties)
+            {
+                PropertyInfo internalProperty = this.GetType().GetProperty(property.Name);
+                object value = property.GetValue(other);
+                if(value != null)
+                {
+                    Type internalType = internalProperty.PropertyType;
+                    Type internalUnderlyingType = Nullable.GetUnderlyingType(internalType);
+                    internalProperty.SetValue(this, Convert.ChangeType(value, internalUnderlyingType ?? internalType), null);
+                }
+                else if(value == null)
+                {
+                    internalProperty.SetValue(this, null, null);
+                }
+            }
         }
     }
 }

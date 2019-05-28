@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -85,16 +86,31 @@ namespace Detrack.ElasticRoute
         public float? ServiceTime {get; set;}
         public float? Lat {get; set;}
         public float? Lng {get; set;}
-        public uint? From {get; set;}
-        public uint? Till {get; set;}
-        public string AssignTo {get; private set;}
-        public uint Run {get; private set;}
-        public uint Sequence {get; private set;}
-        public string Eta {get; private set;}
-        public string Exception {get; private set;}
+        public int? From {get; set;}
+        public int? Till {get; set;}
+        public string AssignTo {get; internal set;}
+        public int Run { get; internal set; }
+        public int Sequence {get; internal set;}
+        public string Eta {get; internal set;}
+        public string Exception {get; internal set;}
 
-        public Stop()
+        [JsonConstructor]
+        internal Stop(string name)
         {
+            this.Name = name;
+        }
+
+        public Stop(string name, string address)
+        {
+            this.Name = name;
+            this.Address = address;
+        }
+
+        public Stop(String name, float lat, float lng)
+        {
+            this.Name = name;
+            this.Lat = lat;
+            this.Lng = lng;
         }
 
         public static bool ValidateStops(List<Stop> stops)
@@ -119,6 +135,32 @@ namespace Detrack.ElasticRoute
                 }
             }
             return true;
+        }
+
+        public Stop Clone()
+        {
+            string json = JsonConvert.SerializeObject(this);
+            return JsonConvert.DeserializeObject<Stop>(json);
+        }
+
+        public void Absorb(Stop other)
+        {
+            PropertyInfo[] properties = other.GetType().GetProperties();
+            foreach(PropertyInfo property in properties)
+            {
+                PropertyInfo internalProperty = this.GetType().GetProperty(property.Name);
+                object value = property.GetValue(other);
+                if(value != null)
+                {
+                    Type internalType = internalProperty.PropertyType;
+                    Type internalUnderlyingType = Nullable.GetUnderlyingType(internalType);
+                    internalProperty.SetValue(this, Convert.ChangeType(value, internalUnderlyingType ?? internalType), null);
+                }
+                else if(value == null)
+                {
+                    internalProperty.SetValue(this, null, null);
+                }
+            }
         }
     }
 }
