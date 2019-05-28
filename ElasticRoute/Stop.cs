@@ -6,16 +6,31 @@ using Newtonsoft.Json.Serialization;
 
 namespace Detrack.ElasticRoute
 {
+    /// <summary>
+    /// Represents a single stop in a <see cref="Plan"/> you need to route <see cref="Vehicle"/>s to.
+    /// </summary>
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy), ItemNullValueHandling = NullValueHandling.Ignore)]
     public class Stop
     {
         private string _name;
-        private float? _weight_load;
-        private float? _volume_load;
-        private float? _seating_load;
-        public string VehicleType {get; set;}
-        public string Depot {get; set;}
-        public string Group {get; set;}
+        private float _weight_load;
+        private float _volume_load;
+        private float _seating_load;
+        /// <summary>
+        /// Gets or sets the vehicle type of the stop, used to add a constraint where this stop can only be served by vehicles with a corresponding type.
+        /// </summary>
+        /// <value>The type of the vehicle.</value>
+        public string VehicleType { get; set; }
+        /// <summary>
+        /// Gets or sets the depot of the stop, used to specify the starting location where the driver would pickup the goods/products to be delivered to the stop. If you leave this empty, it will match the first instance in the list of depots in the plan.
+        /// </summary>
+        /// <value>The depot.</value>
+        public string Depot { get; set; }
+
+        /// <summary>
+        /// Gets or sets the name of the stop. Names MUST be distinct within a plan. Required field.
+        /// </summary>
+        /// <value>Name of the stop. The name must be unique and the value will automatically be trimmed of whitespace.</value>
         public string Name
         {
             get { return _name; }
@@ -31,19 +46,30 @@ namespace Detrack.ElasticRoute
                 }
                 else
                 {
-                    _name = value;
+                    _name = value.Trim();
                 }
             }
         }
-        public string TimeWindow {get; set;}
-        public string Address {get; set;}
-        public string PostalCode {get; set;}
-        public float? WeightLoad
+        /// <summary>
+        /// Gets or sets the address of the stop. Required field.
+        /// </summary>
+        /// <value>The address.</value>
+        public string Address { get; set; }
+        /// <summary>
+        /// Gets or sets the postal code of the stop. This can be used as an alternative form of geocoding (opposed to address/lat+lng) only if your country defined in your plan's GeneralSettings supports postal code geocding.
+        /// </summary>
+        /// <value>The postal code.</value>
+        public string PostalCode { get; set; }
+        /// <summary>
+        /// Gets or sets the weight load of the stop, used to add weight contraints to the routing algorithm.
+        /// </summary>
+        /// <value>The weight load.</value>
+        public float WeightLoad
         {
             get { return _weight_load; }
             set
             {
-                if (value.HasValue && value < 0)
+                if (value < 0)
                 {
                     throw new BadFieldException("Stop WeightLoad cannot be negative");
                 }
@@ -53,12 +79,16 @@ namespace Detrack.ElasticRoute
                 }
             }
         }
-        public float? VolumeLoad
+        /// <summary>
+        /// Gets or sets the volume load of the stop, used to add volume constraints to the routing algorithm.
+        /// </summary>
+        /// <value>The volume load.</value>
+        public float VolumeLoad
         {
             get { return _volume_load; }
             set
             {
-                if (value.HasValue && value < 0)
+                if (value < 0)
                 {
                     throw new BadFieldException("Stop VolumeLoad cannot be negative");
                 }
@@ -68,12 +98,16 @@ namespace Detrack.ElasticRoute
                 }
             }
         }
-        public float? SeatingLoad
+        /// <summary>
+        /// Gets or sets the seating load of the stop, used to add seating constraints to the routing algorithm.
+        /// </summary>
+        /// <value>The seating load.</value>
+        public float SeatingLoad
         {
             get { return _seating_load; }
             set
             {
-                if (value.HasValue && value < 0)
+                if (value < 0)
                 {
                     throw new BadFieldException("Stop SeatingLoad cannot be negative");
                 }
@@ -83,29 +117,83 @@ namespace Detrack.ElasticRoute
                 }
             }
         }
-        public float? ServiceTime {get; set;}
-        public float? Lat {get; set;}
-        public float? Lng {get; set;}
-        public int? From {get; set;}
-        public int? Till {get; set;}
-        public string AssignTo {get; internal set;}
+        /// <summary>
+        /// Gets or sets the service time of the stop, additional time in minutes to be spent at this stop. 
+        /// </summary>
+        /// <value>The service time.</value>
+        public float? ServiceTime { get; set; }
+        /// <summary>
+        /// Gets or sets the latitude of the stop. Can be used in place of address.
+        /// </summary>
+        /// <value>The lat.</value>
+        public float? Lat { get; set; }
+        /// <summary>
+        /// Gets or sets the longtitude of the stop. Can be used in place of address.
+        /// </summary>
+        /// <value>The lng.</value>
+        public float? Lng { get; set; }
+        /// <summary>
+        /// Gets or sets the start of the time window this stop must be served within. Accepts a value of 0 to 2359.
+        /// </summary>
+        /// <value>From.</value>
+        public int? From { get; set; }
+        /// <summary>
+        /// Gets or sets the end of the time window this stop must be served within. Accepts a value of 0 to 2359.
+        /// </summary>
+        /// <value>The till.</value>
+        public int? Till { get; set; }
+        /// <summary>
+        /// After solving the plan, gets the name of the vehicle this stop has been assigned to.
+        /// </summary>
+        /// <value>The assign to.</value>
+        public string AssignTo { get; internal set; }
+        /// <summary>
+        /// After solving the plan, gets the run number this stop belongs to. A run number is used to identify a sequence of stops served by the same vehicle before returning to the depot.
+        /// </summary>
+        /// <value>The run.</value>
         public int Run { get; internal set; }
-        public int Sequence {get; internal set;}
-        public string Eta {get; internal set;}
-        public string Exception {get; internal set;}
+        /// <summary>
+        /// After solving the plan, gets the sequence number of this stop. Denotes the position of this stop in its run. (i.e. the nth stop in the run)
+        /// </summary>
+        /// <value>The sequence.</value>
+        public int Sequence { get; internal set; }
+        /// <summary>
+        /// After solving the plan, gets the estimated time of arrival of the serving vehicle.
+        /// </summary>
+        /// <value>The eta.</value>
+        public DateTime Eta { get; internal set; }
+        /// <summary>
+        /// After solving the plan, gets the reason why this stop cannot be served.
+        /// </summary>
+        /// <value>The exception.</value>
+        public string Exception { get; internal set; }
 
+        /// <summary>
+        /// Initializes a new Stop instance with no forms of address. Use the other constructors to pass addresses. You MUST pass a form of address before solving the plan.
+        /// </summary>
+        /// <param name="name">Name of the stop. The name must be unique and the value will automatically be trimmed of whitespace.</param>
         [JsonConstructor]
-        internal Stop(string name)
+        public Stop(string name)
         {
             this.Name = name;
         }
-
+        /// <summary>
+        /// Initializes a new Stop instance, using a full address to geocode the location.
+        /// </summary>
+        /// <param name="name">Name of the stop. The name must be unique and the value will automatically be trimmed of whitespace.</param>
+        /// <param name="address">Address of the stop. Include the full address with country for the most accurate results.</param>
         public Stop(string name, string address)
         {
             this.Name = name;
             this.Address = address;
         }
 
+        /// <summary>
+        /// Initializes a new Stop instance, using a full 
+        /// </summary>
+        /// <param name="name">Name of the stop. The name must be unique and the value will automatically be trimmed of whitespace.</param>
+        /// <param name="lat">Latitude of the stop.</param>
+        /// <param name="lng">Longitude of the stop</param>
         public Stop(String name, float lat, float lng)
         {
             this.Name = name;
@@ -113,6 +201,11 @@ namespace Detrack.ElasticRoute
             this.Lng = lng;
         }
 
+        /// <summary>
+        /// Given a list of stops, checks whether all these stops have valid data.
+        /// </summary>
+        /// <returns><c>true</c>, if all stops validated, <c>false</c> otherwise.</returns>
+        /// <param name="stops">The list of <see cref="Stop"/>s to validate</param>
         public static bool ValidateStops(List<Stop> stops)
         {
             if (stops.Count < 2)
@@ -137,26 +230,34 @@ namespace Detrack.ElasticRoute
             return true;
         }
 
+        /// <summary>
+        /// Returns a new copy of this instance.
+        /// </summary>
+        /// <returns>The clone.</returns>
         public Stop Clone()
         {
             string json = JsonConvert.SerializeObject(this);
             return JsonConvert.DeserializeObject<Stop>(json);
         }
 
+        /// <summary>
+        /// Copies the attributes of another Stop <paramref name="other"/> such that such that their public attributes match.
+        /// </summary>
+        /// <param name="other">The other stop to copy from</param>
         public void Absorb(Stop other)
         {
             PropertyInfo[] properties = other.GetType().GetProperties();
-            foreach(PropertyInfo property in properties)
+            foreach (PropertyInfo property in properties)
             {
                 PropertyInfo internalProperty = this.GetType().GetProperty(property.Name);
                 object value = property.GetValue(other);
-                if(value != null)
+                if (value != null)
                 {
                     Type internalType = internalProperty.PropertyType;
                     Type internalUnderlyingType = Nullable.GetUnderlyingType(internalType);
                     internalProperty.SetValue(this, Convert.ChangeType(value, internalUnderlyingType ?? internalType), null);
                 }
-                else if(value == null)
+                else if (value == null)
                 {
                     internalProperty.SetValue(this, null, null);
                 }
