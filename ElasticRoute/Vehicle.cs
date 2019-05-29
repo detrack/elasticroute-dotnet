@@ -6,6 +6,9 @@ using Newtonsoft.Json.Serialization;
 
 namespace Detrack.ElasticRoute
 {
+    /// <summary>
+    /// Represents a single vehicle in a <see cref="Plan"/> you can use to serve <see cref="Stop"/>s.
+    /// </summary>
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy), ItemNullValueHandling = NullValueHandling.Ignore)]
     public class Vehicle
     {
@@ -13,7 +16,15 @@ namespace Detrack.ElasticRoute
         private float? _weight_capacity;
         private float? _volume_capacity;
         private float? _seating_capacity;
+        /// <summary>
+        /// Gets or sets the depot of the vehicle, used to specify the "home depot" of this vehicle
+        /// </summary>
+        /// <value>The depot.</value>
         public string Depot { get; set;}
+        /// <summary>
+        /// Gets or sets the name of the vehicle. The name MUST be distinct in a plan. Required field.
+        /// </summary>
+        /// <value>The name.</value>
         public string Name
         {
             get { return _name; }
@@ -32,7 +43,15 @@ namespace Detrack.ElasticRoute
                 }
             }
         }
+        /// <summary>
+        /// Gets or sets the priority of the vehicle. If specified, vehicles with higher priority will be dispatched first.
+        /// </summary>
+        /// <value>The priority.</value>
         public int Priority { get; set; }
+        /// <summary>
+        /// Gets or sets the weight capacity. If specified, <see cref="Stop.WeightLoad"/> will be considered for route optimization. Leave as <c>null</c> otherwise.
+        /// </summary>
+        /// <value>The weight capacity.</value>
         public float? WeightCapacity
         {
             get { return _weight_capacity; }
@@ -48,6 +67,10 @@ namespace Detrack.ElasticRoute
                 }
             }
         }
+        /// <summary>
+        /// Gets or sets the volume capacity. If specified, <see cref="Stop.VolumeLoad"/> will be considered for route optimization. Leave as <c>null</c> otherwise.
+        /// </summary>
+        /// <value>The volume capacity.</value>
         public float? VolumeCapacity
         {
             get { return _volume_capacity; }
@@ -63,6 +86,10 @@ namespace Detrack.ElasticRoute
                 }
             }
         }
+        /// <summary>
+        /// Gets or sets the seating capacity. If specified, <see cref="Stop.SeatingLoad"/> will be considered for route optimization. Leave as <c>null</c> otherwise.
+        /// </summary>
+        /// <value>The seating capacity.</value>
         public float? SeatingCapacity
         {
             get { return _seating_capacity; }
@@ -78,25 +105,58 @@ namespace Detrack.ElasticRoute
                 }
             }
         }
+        /// <summary>
+        /// Gets or sets the buffer time, the amount of travelling time in minutes to factor in for each additional stop.
+        /// </summary>
+        /// <value>The buffer time in minutes</value>
         public int Buffer { get; set; }
+        /// <summary>
+        /// Gets or sets the start of the time window this Vehicle is available to do deliveries. Accepts a value of 0 to 2359.
+        /// </summary>
+        /// <value>Starting time, int from 0 to 2359</value>
         public int? AvailFrom { get; set; }
+        /// <summary>
+        /// Gets or sets the end of the time window this Vehicle is available to do deliveries. Accepts a value of 0 to 2359.
+        /// </summary>
+        /// <value>Ending time, int from 0 to 2359</value>
         public int? AvailTill { get; set; }
+        /// <summary>
+        /// Gets or sets whether the vehicle should return to the depot after serving all stops. The time required to travel back from the last stop will be taken into account so that the vehicle would return to the depot before the time specified in <see cref="Vehicle.AvailTill"/>.
+        /// </summary>
+        /// <value>Boolean indicating whether the vehicle should return to the depot or not</value>
         public bool? ReturnToDepot { get; set; }
+        /// <summary>
+        /// Gets or sets the list of vehicle types this vehicle can be classified under. Used to satisfy constraints set by <see cref="Stop.VehicleType"/>.
+        /// </summary>
+        /// <value>The vehicle types as a list of strings</value>
         public List<string> VehicleTypes { get; set; }
 
+        /// <summary>
+        /// Initializes a new Vehicle instance. Name must be distinct.
+        /// </summary>
+        /// <param name="name">Name of the vehicle. The name must be unique and the value will automatically be trimmed of whitespace.</param>
         [JsonConstructor]
         public Vehicle(string name)
         {
             this.Name = name;
         }
 
+        /// <summary>
+        /// Initializes a new Vehicle instance with the home <see cref="Depot"/> explicitly defined. Name must be distinct.
+        /// </summary>
+        /// <param name="name">Name of the vehicle. The name must be unique and the value will automatically be trimmed of whitespace.</param>
+        /// <param name="depot">Home <see cref="Depot"/> of the vehicle. Must match a <see cref="Depot"/> with the same name.</param>
         public Vehicle(string name, string depot)
         {
             this.Name = name;
             this.Depot = depot;
         }
 
-
+        /// <summary>
+        /// Given a list of vehicles, checks whether all these stops have valid data.
+        /// </summary>
+        /// <returns><c>true</c>, if all vehicles validated, <c>false</c> otherwise.</returns>
+        /// <param name="vehicles">Vehicles.</param>
         public static bool ValidateVehicles(List<Vehicle> vehicles)
         {
             if(vehicles.Count == 0)
@@ -114,12 +174,20 @@ namespace Detrack.ElasticRoute
             return true;
         }
 
+        /// <summary>
+        /// Returns a new copy of this instance
+        /// </summary>
+        /// <returns>The clone.</returns>
         public Vehicle Clone()
         {
             string json = JsonConvert.SerializeObject(this);
             return JsonConvert.DeserializeObject<Vehicle>(json);
         }
 
+        /// <summary>
+        /// Copies the attributes of another <see cref="Vehicle"/> <paramref name="other"/> such that their public attributes match.
+        /// </summary>
+        /// <param name="other">The other <see cref="Vehicle"/> to copy from</param>
         public void Absorb(Vehicle other)
         {
             PropertyInfo[] properties = other.GetType().GetProperties();
