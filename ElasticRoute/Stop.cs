@@ -2,7 +2,9 @@
 using System.Reflection;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
+using System.Runtime.Serialization;
 
 namespace Detrack.ElasticRoute
 {
@@ -10,6 +12,7 @@ namespace Detrack.ElasticRoute
     /// Represents a single stop in a <see cref="Plan"/> you need to route <see cref="Vehicle"/>s to.
     /// </summary>
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy), ItemNullValueHandling = NullValueHandling.Ignore)]
+    //[JsonConverter(typeof(Detrack.ElasticRoute.Tools.StopConverter))]
     public class Stop
     {
         private string _name;
@@ -146,26 +149,31 @@ namespace Detrack.ElasticRoute
         /// After solving the plan, gets the name of the vehicle this stop has been assigned to.
         /// </summary>
         /// <value>The assign to.</value>
+        [JsonProperty]
         public string AssignTo { get; internal set; }
         /// <summary>
         /// After solving the plan, gets the run number this stop belongs to. A run number is used to identify a sequence of stops served by the same vehicle before returning to the depot.
         /// </summary>
         /// <value>The run.</value>
+        [JsonProperty]
         public int Run { get; internal set; }
         /// <summary>
         /// After solving the plan, gets the sequence number of this stop. Denotes the position of this stop in its run. (i.e. the nth stop in the run)
         /// </summary>
         /// <value>The sequence.</value>
+        [JsonProperty]
         public int Sequence { get; internal set; }
         /// <summary>
         /// After solving the plan, gets the estimated time of arrival of the serving vehicle.
         /// </summary>
         /// <value>The eta.</value>
+        [JsonProperty]
         public DateTime Eta { get; internal set; }
         /// <summary>
         /// After solving the plan, gets the reason why this stop cannot be served.
         /// </summary>
         /// <value>The exception.</value>
+        [JsonProperty]
         public string Exception { get; internal set; }
 
         /// <summary>

@@ -40,7 +40,11 @@ namespace Tests
             plan.Solve().Wait();
             Assert.AreEqual("planned", plan.Status);
             Assert.AreEqual(100, plan.Progress);
+            Console.WriteLine(plan.Stops[0].Name);
+            Console.WriteLine(plan.Stops[0].Eta);
             Assert.AreEqual("Van 1", plan.Stops[0].AssignTo);
+            Assert.AreEqual(1, plan.Stops[0].Run);
+            Assert.AreEqual(2, plan.Stops[0].Sequence);
         }
     }
 }

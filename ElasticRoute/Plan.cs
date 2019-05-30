@@ -151,8 +151,11 @@ namespace Detrack.ElasticRoute
                     vehicle.Depot = this.Depots[0].Name;
                 }
             }
-
-            StringContent content = new StringContent(JsonConvert.SerializeObject(this));
+            JsonSerializerSettings settings = new JsonSerializerSettings();
+            settings.ContractResolver = new Detrack.ElasticRoute.Tools.StopContractResolver();
+            settings.Formatting = Formatting.Indented;
+            
+            StringContent content = new StringContent(JsonConvert.SerializeObject(this, settings));
             content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
             var responseTask = client.PostAsync(requestPath, content);
             HttpResponseMessage responseMessage = await responseTask;
@@ -173,12 +176,15 @@ namespace Detrack.ElasticRoute
             foreach(JToken vehicleToken in responseObject["data"]["details"]["vehicles"])
             {
                 Vehicle receivedVehicle = vehicleToken.ToObject<Vehicle>();
-                this.Vehicles.Find(x => x.Name == receivedVehicle.Name).Absorb(receivedVehicle); 
+                Vehicle internalVehicle = this.Vehicles.Find(x => x.Name == receivedVehicle.Name);
+                internalVehicle.Absorb(receivedVehicle); 
             }
             foreach(JToken depotToken in responseObject["data"]["details"]["depots"])
             {
                 Depot receivedDepot = depotToken.ToObject<Depot>();
-                this.Depots.Find(x => x.Name == receivedDepot.Name).Absorb(receivedDepot);
+                Depot internalDepot = this.Depots.Find(x => x.Name == receivedDepot.Name);
+                internalDepot.Absorb(receivedDepot);
+                
             }
             this.Progress = responseObject["data"]["progress"].Value<int>();
             this.Status = responseObject["data"]["stage"].Value<string>();
