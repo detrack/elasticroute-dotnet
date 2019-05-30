@@ -59,7 +59,7 @@ namespace Detrack.ElasticRoute
         /// <value>The address.</value>
         public string Address { get; set; }
         /// <summary>
-        /// Gets or sets the postal code of the stop. This can be used as an alternative form of geocoding (opposed to address/lat+lng) only if your country defined in your plan's GeneralSettings supports postal code geocding.
+        /// Gets or sets the postal code of the stop. This can be used as an alternative form of geocoding (opposed to address/lat+lng) only if your country defined in your plan's GeneralSettings supports postal code geocoding.
         /// </summary>
         /// <value>The postal code.</value>
         public string PostalCode { get; set; }
@@ -197,10 +197,10 @@ namespace Detrack.ElasticRoute
         }
 
         /// <summary>
-        /// Initializes a new Stop instance, using a full 
+        /// Initializes a new Stop instance, using a set of coordinates to exactly pinpoint the location.
         /// </summary>
         /// <param name="name">Name of the stop. The name must be unique and the value will automatically be trimmed of whitespace.</param>
-        /// <param name="lat">Latitude of the stop.</param>
+        /// <param name="lat">Latitude of the stop</param>
         /// <param name="lng">Longitude of the stop</param>
         public Stop(String name, float lat, float lng)
         {
@@ -249,7 +249,7 @@ namespace Detrack.ElasticRoute
         }
 
         /// <summary>
-        /// Copies the attributes of another Stop <paramref name="other"/> such that such that their public attributes match.
+        /// Copies the attributes of another Stop <paramref name="other"/> such that their public attributes match.
         /// </summary>
         /// <param name="other">The other stop to copy from</param>
         public void Absorb(Stop other)

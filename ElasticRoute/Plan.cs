@@ -159,7 +159,6 @@ namespace Detrack.ElasticRoute
             content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
             var responseTask = client.PostAsync(requestPath, content);
             HttpResponseMessage responseMessage = await responseTask;
-            Console.WriteLine((int) responseMessage.StatusCode);
             var stringTask = responseMessage.Content.ReadAsStringAsync();
             string responseString = await stringTask;
             if (!responseMessage.IsSuccessStatusCode)
