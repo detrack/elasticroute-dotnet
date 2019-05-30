@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Collections.Generic;
+using System.ComponentModel;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
@@ -10,9 +12,15 @@ namespace Detrack.ElasticRoute
     /// Represents a depot (warehouse) in a <see cref="Plan"/> your <see cref="Vehicle"/>s start from.
     /// </summary>
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy), ItemNullValueHandling = NullValueHandling.Ignore)]
-    public class Depot
-    {
+    public class Depot : Detrack.ElasticRoute.Tools.BaseModel
+    {   
         private string _name;
+        private string _address;
+        private string _postal_code;
+        private float? _lat;
+        private float? _lng;
+        private bool? _default;
+
         /// <summary>
         /// Gets or sets the depot. Names MUST be distinct within a plan. Required field.
         /// </summary>
@@ -22,7 +30,7 @@ namespace Detrack.ElasticRoute
             get { return _name; }
             set
             {
-                if (value == null || value.Trim() == "")
+                if (string.IsNullOrWhiteSpace(value))
                 {
                     throw new BadFieldException("Depot name cannot be null");
                 }
@@ -32,7 +40,11 @@ namespace Detrack.ElasticRoute
                 }
                 else
                 {
-                    _name = value;
+                    if (_name != value)
+                    {
+                        NotifyPropertyChanged();
+                        _name = value.Trim();
+                    }
                 }
             }
         }
@@ -40,27 +52,83 @@ namespace Detrack.ElasticRoute
         /// Gets or sets the address of the depot. Required field.
         /// </summary>
         /// <value>The address.</value>
-        public string Address { get; set; }
+        public string Address
+        {
+            get => _address;
+            set
+            {
+                if (_address != value)
+                {
+                    NotifyPropertyChanged();
+                    _address = value;
+                }
+            }
+        }
         /// <summary>
         /// Gets or sets the postal code of the depot. This can be used as an alternative form of geocoding (opposed to address/lat+lng) only if your country defined in your plan's GeneralSettings support postal code geocoding.
         /// </summary>
         /// <value>The postal code.</value>
-        public string PostalCode { get; set; }
+        public string PostalCode
+        {
+            get => _postal_code;
+            set
+            {
+                if(_postal_code != value)
+                {
+                    NotifyPropertyChanged();
+                    _postal_code = value;
+                }
+            }
+
+        }
         /// <summary>
         /// Gets or sets the latitude of the depot. Can be used in place of address.
         /// </summary>
         /// <value>The lat.</value>
-        public float? Lat { get; set; }
+        public float? Lat
+        {
+            get => _lat;
+            set
+            {
+                if(_lat != value)
+                {
+                    NotifyPropertyChanged();
+                    _lat = value;
+                }
+            }
+        }
         /// <summary>
         //  Gets or sets the longtitude of the depot. Can be used in place of address.
         /// </summary>
         /// <value>The lng.</value>
-        public float? Lng { get; set; }
+        public float? Lng
+        {
+            get => _lng;
+            set
+            {
+                if(_lng != value)
+                {
+                    NotifyPropertyChanged();
+                    _lng = value;
+                }
+            }
+        }
         /// <summary>
         /// Gets or sets whether this depot would be the depot assumed to be where <see cref="Vehicles"/> without a home depot will start from. If there are multiple depots in the same <see cref="Plan"/> marked as default, the first one will be used.
         /// </summary>
         /// <value>Whether this depot is the default depot</value>
-        public bool? Default { get; set;}
+        public bool? Default
+        {
+            get => _default;
+            set
+            {
+                if(_default != value)
+                {
+                    NotifyPropertyChanged();
+                    _default = value;
+                }
+            }
+        }
 
         /// <summary>
         /// Initializes a new Depot instance with no forms of address. Use the other constructors to pass addresses. You MUST pass a form of address before solving the plan.

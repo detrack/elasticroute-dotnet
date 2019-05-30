@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
+﻿using System.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 namespace Detrack.ElasticRoute.Tools
 {
-    public class StopContractResolver : DefaultContractResolver
+    public class CustomContractResolver : DefaultContractResolver
     {
-        public StopContractResolver()
-        {
-        }
-
         protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
         {
             JsonProperty jsonProperty = base.CreateProperty(member, memberSerialization);
@@ -24,6 +18,19 @@ namespace Detrack.ElasticRoute.Tools
                     jsonProperty.Writable = true;
                 }
             }
+
+            jsonProperty.ShouldSerialize = (instance) =>
+            {
+                if(instance is BaseModel)
+                {
+                    BaseModel o = instance as BaseModel;
+                    return o.ModifiedProperties.Contains(jsonProperty.UnderlyingName);
+                }
+                else
+                {
+                    return ! jsonProperty.Ignored;
+                }
+            };
 
             return jsonProperty;
         }

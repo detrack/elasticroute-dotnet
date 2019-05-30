@@ -1,10 +1,12 @@
-﻿using System;
+﻿#pragma warning disable RECS0018 // Comparison of floating point numbers with equality operator
+
+using System;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Collections.Generic;
+using System.ComponentModel;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
-using System.Runtime.Serialization;
 
 namespace Detrack.ElasticRoute
 {
@@ -13,22 +15,53 @@ namespace Detrack.ElasticRoute
     /// </summary>
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy), ItemNullValueHandling = NullValueHandling.Ignore)]
     //[JsonConverter(typeof(Detrack.ElasticRoute.Tools.StopConverter))]
-    public class Stop
-    {
+    public class Stop: Detrack.ElasticRoute.Tools.BaseModel 
+    {   
+        private string _vehicle_type;
+        private string _depot;
         private string _name;
         private float _weight_load;
         private float _volume_load;
         private float _seating_load;
+        private string _address;
+        private string _postal_code;
+        private int? _service_time;
+        private float? _lat;
+        private float? _lng;
+        private int? _from;
+        private int? _till;
         /// <summary>
         /// Gets or sets the vehicle type of the stop, used to add a constraint where this stop can only be served by vehicles with a corresponding type.
         /// </summary>
         /// <value>The type of the vehicle.</value>
-        public string VehicleType { get; set; }
+        public string VehicleType
+        {
+            get => _vehicle_type;
+            set
+            {
+                if (_vehicle_type != value)
+                {
+                    NotifyPropertyChanged();
+                    _vehicle_type = value;
+                }
+            }
+        }
         /// <summary>
         /// Gets or sets the depot of the stop, used to specify the starting location where the driver would pickup the goods/products to be delivered to the stop. If you leave this empty, it will match the first instance in the list of depots in the plan.
         /// </summary>
         /// <value>The depot.</value>
-        public string Depot { get; set; }
+        public string Depot
+        {
+            get => _depot;
+            set
+            {
+                if(_depot != value)
+                {
+                    NotifyPropertyChanged();
+                    _depot = value;
+                }
+            }
+        }
 
         /// <summary>
         /// Gets or sets the name of the stop. Names MUST be distinct within a plan. Required field.
@@ -49,7 +82,11 @@ namespace Detrack.ElasticRoute
                 }
                 else
                 {
-                    _name = value.Trim();
+                    if (_name != value.Trim())
+                    {
+                        NotifyPropertyChanged();
+                        _name = value.Trim();
+                    }
                 }
             }
         }
@@ -57,12 +94,34 @@ namespace Detrack.ElasticRoute
         /// Gets or sets the address of the stop. Required field.
         /// </summary>
         /// <value>The address.</value>
-        public string Address { get; set; }
+        public string Address
+        {
+            get => _address;
+            set
+            {
+                if (_address != value)
+                {
+                    NotifyPropertyChanged();
+                    _address = value;
+                }
+            }
+        }
         /// <summary>
         /// Gets or sets the postal code of the stop. This can be used as an alternative form of geocoding (opposed to address/lat+lng) only if your country defined in your plan's GeneralSettings supports postal code geocoding.
         /// </summary>
         /// <value>The postal code.</value>
-        public string PostalCode { get; set; }
+        public string PostalCode
+        {
+            get => _postal_code;
+            set
+            {
+                if (_postal_code != value)
+                {
+                    NotifyPropertyChanged();
+                    _postal_code = value;
+                }
+            }
+        }
         /// <summary>
         /// Gets or sets the weight load of the stop, used to add weight contraints to the routing algorithm.
         /// </summary>
@@ -78,7 +137,11 @@ namespace Detrack.ElasticRoute
                 }
                 else
                 {
-                    _weight_load = value;
+                    if (_weight_load != value)
+                    {
+                        NotifyPropertyChanged();
+                        _weight_load = value;
+                    }
                 }
             }
         }
@@ -97,7 +160,11 @@ namespace Detrack.ElasticRoute
                 }
                 else
                 {
-                    _volume_load = value;
+                    if (_volume_load != value)
+                    {
+                        NotifyPropertyChanged();
+                        _volume_load = value;
+                    }
                 }
             }
         }
@@ -116,7 +183,11 @@ namespace Detrack.ElasticRoute
                 }
                 else
                 {
-                    _seating_load = value;
+                    if (_seating_load != value)
+                    {
+                        NotifyPropertyChanged();
+                        _seating_load = value;
+                    }
                 }
             }
         }
@@ -124,27 +195,82 @@ namespace Detrack.ElasticRoute
         /// Gets or sets the service time of the stop, additional time in minutes to be spent at this stop. 
         /// </summary>
         /// <value>The service time.</value>
-        public float? ServiceTime { get; set; }
+        public int? ServiceTime
+        {
+            get => _service_time;
+            set
+            {
+                if (_service_time != value)
+                {
+                    NotifyPropertyChanged();
+                    _service_time = value;
+                }
+            }
+        }
         /// <summary>
         /// Gets or sets the latitude of the stop. Can be used in place of address.
         /// </summary>
         /// <value>The lat.</value>
-        public float? Lat { get; set; }
+        public float? Lat
+        {
+            get => _lat;
+            set
+            {
+                if (_lat != value)
+                {
+                    NotifyPropertyChanged();
+                    _lat = value;
+                }
+            }
+        }
         /// <summary>
         /// Gets or sets the longtitude of the stop. Can be used in place of address.
         /// </summary>
         /// <value>The lng.</value>
-        public float? Lng { get; set; }
+        public float? Lng
+        {
+            get => _lng;
+            set
+            {
+                if (_lng != value)
+                {
+                    NotifyPropertyChanged();
+                    _lng = value;
+                }
+            }
+        }
         /// <summary>
         /// Gets or sets the start of the time window this stop must be served within. Accepts a value of 0 to 2359.
         /// </summary>
         /// <value>From.</value>
-        public int? From { get; set; }
+        public int? From
+        {
+            get => _from;
+            set
+            {
+                if (_from != value)
+                {
+                    NotifyPropertyChanged();
+                    _from = value;
+                }
+            }
+        }
         /// <summary>
         /// Gets or sets the end of the time window this stop must be served within. Accepts a value of 0 to 2359.
         /// </summary>
         /// <value>The till.</value>
-        public int? Till { get; set; }
+        public int? Till
+        {
+            get => _till;
+            set
+            {
+                if(_till != value)
+                {
+                    NotifyPropertyChanged();
+                    _till = value;
+                }
+            }
+        }
         /// <summary>
         /// After solving the plan, gets the name of the vehicle this stop has been assigned to.
         /// </summary>

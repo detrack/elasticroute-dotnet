@@ -152,7 +152,7 @@ namespace Detrack.ElasticRoute
                 }
             }
             JsonSerializerSettings settings = new JsonSerializerSettings();
-            settings.ContractResolver = new Detrack.ElasticRoute.Tools.StopContractResolver();
+            settings.ContractResolver = new Detrack.ElasticRoute.Tools.CustomContractResolver();
             settings.Formatting = Formatting.Indented;
             
             StringContent content = new StringContent(JsonConvert.SerializeObject(this, settings));
