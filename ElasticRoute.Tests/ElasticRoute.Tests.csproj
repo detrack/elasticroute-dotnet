@@ -16,5 +16,4 @@
   <ItemGroup>
     <ProjectReference Include="..\ElasticRoute\ElasticRoute.csproj" />
   </ItemGroup>
-
 </Project>

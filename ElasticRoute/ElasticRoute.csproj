@@ -7,6 +7,11 @@
     <OutputType>Library</OutputType>
     <PackageId>ElasticRoute</PackageId>
     <PackageTags>dotnet;elasticroute;api</PackageTags>
+    <Authors>Detrack Systems, Chester Koh</Authors>
+    <Copyright>Detrack Systems</Copyright>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <Owners>Detrack Systems</Owners>
+    <RootNamespace>Detrack.ElasticRoute</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
         <PackageReference Include="Newtonsoft.Json" Version="[11.0.1,]" />
