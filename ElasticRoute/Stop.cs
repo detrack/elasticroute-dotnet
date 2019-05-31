@@ -15,14 +15,14 @@ namespace Detrack.ElasticRoute
     /// </summary>
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy), ItemNullValueHandling = NullValueHandling.Ignore)]
     //[JsonConverter(typeof(Detrack.ElasticRoute.Tools.StopConverter))]
-    public class Stop: Detrack.ElasticRoute.Tools.BaseModel 
-    {   
+    public class Stop : Detrack.ElasticRoute.Tools.BaseModel
+    {
         private string _vehicle_type;
         private string _depot;
         private string _name;
-        private float _weight_load;
-        private float _volume_load;
-        private float _seating_load;
+        private float? _weight_load;
+        private float? _volume_load;
+        private float? _seating_load;
         private string _address;
         private string _postal_code;
         private int? _service_time;
@@ -55,7 +55,7 @@ namespace Detrack.ElasticRoute
             get => _depot;
             set
             {
-                if(_depot != value)
+                if (_depot != value)
                 {
                     NotifyPropertyChanged();
                     _depot = value;
@@ -126,7 +126,7 @@ namespace Detrack.ElasticRoute
         /// Gets or sets the weight load of the stop, used to add weight contraints to the routing algorithm.
         /// </summary>
         /// <value>The weight load.</value>
-        public float WeightLoad
+        public float? WeightLoad
         {
             get { return _weight_load; }
             set
@@ -149,7 +149,7 @@ namespace Detrack.ElasticRoute
         /// Gets or sets the volume load of the stop, used to add volume constraints to the routing algorithm.
         /// </summary>
         /// <value>The volume load.</value>
-        public float VolumeLoad
+        public float? VolumeLoad
         {
             get { return _volume_load; }
             set
@@ -172,7 +172,7 @@ namespace Detrack.ElasticRoute
         /// Gets or sets the seating load of the stop, used to add seating constraints to the routing algorithm.
         /// </summary>
         /// <value>The seating load.</value>
-        public float SeatingLoad
+        public float? SeatingLoad
         {
             get { return _seating_load; }
             set
@@ -264,7 +264,7 @@ namespace Detrack.ElasticRoute
             get => _till;
             set
             {
-                if(_till != value)
+                if (_till != value)
                 {
                     NotifyPropertyChanged();
                     _till = value;
