@@ -11,7 +11,7 @@ using Newtonsoft.Json.Serialization;
 namespace Detrack.ElasticRoute
 {
     /// <summary>
-    /// Represents a route plan used to route your fleet. Contains <see cref="Stop"/>s, <see cref="Vehicles"/>s and <see cref="Depots"/>.
+    /// Represents a route plan used to route your fleet. Contains <see cref="Stop"/>s, <see cref="Vehicle"/>s and <see cref="Depot"/>s.
     /// </summary>
     [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
     public class Plan
