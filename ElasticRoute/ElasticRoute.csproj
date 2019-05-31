@@ -12,7 +12,7 @@
         <NeutralLanguage>en-US</NeutralLanguage>
         <Owners>Detrack Systems</Owners>
         <RootNamespace>Detrack.ElasticRoute</RootNamespace>
-        <Version>1.0.2</Version>
+        <Version>1.0.3</Version>
         <Authors>Detrack Systems</Authors>
         <Company>Detrack Systems</Company>
         <PackageIconUrl>https://www.elasticroute.com/wp-content/uploads/2019/04/favicon.png</PackageIconUrl>
