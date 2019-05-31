@@ -20,7 +20,7 @@ namespace Detrack.ElasticRoute
         /// Gets or sets the base URI at which the ElasticRoute API is found. You should only change this if you are self-hosting the ElasticRoute server.
         /// </summary>
         /// <value>The base URI.</value>
-        public static Uri BaseURI { get; set; }
+        public static Uri DefaultBaseURI { get; set; }
         /// <summary>
         /// Gets or sets the default API key used to authenticate against the API. Your API Key can be found in the dashboard.
         /// </summary>
@@ -216,10 +216,11 @@ namespace Detrack.ElasticRoute
 
         static Plan()
         {
-            BaseURI = new Uri("https://app.elasticroute.com/api/v1/plan");
+            DefaultBaseURI = new Uri("https://app.elasticroute.com/api/v1/");
             handler.AllowAutoRedirect = true;
             handler.UseCookies = false;
-
+            client.Timeout = System.Threading.Timeout.InfiniteTimeSpan;
+            client.DefaultRequestHeaders.Accept.Clear();
         }
         /// <summary>
         /// Initializes a new Plan instance with the specified id. Id is required.
@@ -241,11 +242,7 @@ namespace Detrack.ElasticRoute
             {
                 throw new BadFieldException("You neeed to create an id for this plan!");
             }
-            client.DefaultRequestHeaders.Accept.Clear();
-            client.DefaultRequestHeaders.Add("Authorization", $"Bearer {this.ApiKey ?? DefaultApiKey}");
-            client.BaseAddress = BaseURI;
-            client.Timeout = System.Threading.Timeout.InfiniteTimeSpan;
-            string requestPath = $"plan/{this.Id}";
+            string requestPath = $"plan/{Uri.EscapeUriString(this.Id)}";
             if (this.ConnectionType == ConnectionTypes.sync)
             {
                 requestPath += "?c=sync";
@@ -295,8 +292,57 @@ namespace Detrack.ElasticRoute
             settings.Formatting = Formatting.Indented;
 
             StringContent content = new StringContent(JsonConvert.SerializeObject(this, settings));
+
             content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-            var responseTask = client.PostAsync(requestPath, content);
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, new Uri(DefaultBaseURI + requestPath))
+            {
+                Content = content
+            };
+            request.Headers.Add("Authorization", $"Bearer {this.ApiKey ?? DefaultApiKey}");
+            var responseTask = client.SendAsync(request);
+            HttpResponseMessage responseMessage = await responseTask;
+            var stringTask = responseMessage.Content.ReadAsStringAsync();
+            string responseString = await stringTask;
+            if (!responseMessage.IsSuccessStatusCode)
+            {
+                throw new HttpRequestException($"API Return Code {(int)responseMessage.StatusCode}");
+            }
+            JObject responseObject = JObject.Parse(responseString);
+            foreach (JToken stopToken in responseObject["data"]["details"]["stops"])
+            {
+                Stop receivedStop = stopToken.ToObject<Stop>();
+                Stop internalStop = this.Stops.Find(x => x.Name == receivedStop.Name);
+                internalStop.Absorb(receivedStop);
+            }
+            foreach (JToken vehicleToken in responseObject["data"]["details"]["vehicles"])
+            {
+                Vehicle receivedVehicle = vehicleToken.ToObject<Vehicle>();
+                Vehicle internalVehicle = this.Vehicles.Find(x => x.Name == receivedVehicle.Name);
+                internalVehicle.Absorb(receivedVehicle);
+            }
+            foreach (JToken depotToken in responseObject["data"]["details"]["depots"])
+            {
+                Depot receivedDepot = depotToken.ToObject<Depot>();
+                Depot internalDepot = this.Depots.Find(x => x.Name == receivedDepot.Name);
+                internalDepot.Absorb(receivedDepot);
+
+            }
+            this.Progress = responseObject["data"]["progress"].Value<int>();
+            this.Status = responseObject["data"]["stage"].Value<string>();
+            this.Id = responseObject["data"]["plan_id"].Value<string>();
+            this.SubmittedAt = responseObject["data"]["submitted"].Value<DateTime>();
+        }
+
+        public async Task Refresh()
+        {
+            if (string.IsNullOrWhiteSpace(this.Id))
+            {
+                throw new BadFieldException("You neeed to create an id for this plan!");
+            }
+            string requestPath = $"plan/{Uri.EscapeUriString(this.Id)}";
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, new Uri(DefaultBaseURI + requestPath));
+            request.Headers.Add("Authorization", $"Bearer {this.ApiKey ?? DefaultApiKey}");
+            var responseTask = client.SendAsync(request);
             HttpResponseMessage responseMessage = await responseTask;
             var stringTask = responseMessage.Content.ReadAsStringAsync();
             string responseString = await stringTask;
