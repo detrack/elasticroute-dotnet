@@ -1,22 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-
-  <PropertyGroup>
-    <Title>ElasticRoute</Title>
-    <Description>A .NET library to interface with the ElasticRoute API</Description>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <OutputType>Library</OutputType>
-    <PackageId>ElasticRoute</PackageId>
-    <PackageTags>dotnet;elasticroute;api</PackageTags>
-    <Authors>Detrack Systems, Chester Koh</Authors>
-    <Copyright>Detrack Systems</Copyright>
-    <NeutralLanguage>en-US</NeutralLanguage>
-    <Owners>Detrack Systems</Owners>
-    <RootNamespace>Detrack.ElasticRoute</RootNamespace>
-  </PropertyGroup>
-  <ItemGroup>
+    <PropertyGroup>
+        <Title>ElasticRoute</Title>
+        <Description>A .NET library to interface with the ElasticRoute API</Description>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <OutputType>Library</OutputType>
+        <PackageId>ElasticRoute</PackageId>
+        <PackageTags>dotnet;elasticroute;api</PackageTags>
+        <Authors>Detrack Systems, Chester Koh</Authors>
+        <Copyright>Detrack Systems</Copyright>
+        <NeutralLanguage>en-US</NeutralLanguage>
+        <Owners>Detrack Systems</Owners>
+        <RootNamespace>Detrack.ElasticRoute</RootNamespace>
+        <Version>1.0.1</Version>
+        <Authors>Detrack Systems</Authors>
+        <Company>Detrack Systems</Company>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+        <DebugType>
+        </DebugType>
+        <DocumentationFile>bin\Release\netstandard2.0\ElasticRoute.xml</DocumentationFile>
+    </PropertyGroup>
+    <ItemGroup>
         <PackageReference Include="Newtonsoft.Json" Version="[11.0.1,]" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Tools\" />
-  </ItemGroup>
+    </ItemGroup>
+    <ItemGroup>
+        <Folder Include="Tools\" />
+    </ItemGroup>
 </Project>

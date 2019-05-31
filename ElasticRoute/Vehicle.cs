@@ -2,10 +2,8 @@
 
 using System;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System.Collections.Specialized;
@@ -57,7 +55,8 @@ namespace Detrack.ElasticRoute
                 if (value == null || value.Trim() == "")
                 {
                     throw new BadFieldException("Vehicle name cannot be null");
-                }else if(value.Length > 255)
+                }
+                else if (value.Length > 255)
                 {
                     throw new BadFieldException("Vehicle name cannot be more than 255 chars");
                 }
@@ -78,11 +77,14 @@ namespace Detrack.ElasticRoute
         public int? Priority
         {
             get => _priority;
-            set {
-                if(value.HasValue && value < 0)
+            set
+            {
+                if (value.HasValue && value < 0)
                 {
                     throw new BadFieldException("Vehicle Priority cannot be negative");
-                }else{
+                }
+                else
+                {
                     if (_priority != value)
                     {
                         NotifyPropertyChanged();
@@ -106,11 +108,11 @@ namespace Detrack.ElasticRoute
                 }
                 else
                 {
-                   if (_weight_capacity != value)
-                   {
+                    if (_weight_capacity != value)
+                    {
                         NotifyPropertyChanged();
                         _weight_capacity = value;
-                   }
+                    }
                 }
             }
         }
@@ -129,11 +131,11 @@ namespace Detrack.ElasticRoute
                 }
                 else
                 {
-                   if (_volume_capacity != value)
-                   {
+                    if (_volume_capacity != value)
+                    {
                         NotifyPropertyChanged();
                         _volume_capacity = value;
-                   }
+                    }
                 }
             }
         }
@@ -169,7 +171,7 @@ namespace Detrack.ElasticRoute
             get => _buffer;
             set
             {
-                if(value.HasValue && value < 0)
+                if (value.HasValue && value < 0)
                 {
                     throw new BadFieldException("Vehicle Buffer cannot be negative");
                 }
@@ -195,7 +197,7 @@ namespace Detrack.ElasticRoute
             {
                 if (value.HasValue)
                 {
-                    if(value < 0 || value > 2359)
+                    if (value < 0 || value > 2359)
                     {
                         throw new BadFieldException("Vehicle AvailFrom must be between 0 and 2359");
                     }
@@ -221,7 +223,7 @@ namespace Detrack.ElasticRoute
             {
                 if (value.HasValue)
                 {
-                    if(value < 0 || value > 2359)
+                    if (value < 0 || value > 2359)
                     {
                         throw new BadFieldException("Vehicle AvailTill must be between 0 and 2359");
                     }
@@ -261,7 +263,7 @@ namespace Detrack.ElasticRoute
             get => _vehicle_types;
             set
             {
-                if(_vehicle_types != value)
+                if (_vehicle_types != value)
                 {
                     _vehicle_types = value;
                     _vehicle_types.CollectionChanged -= vehicleTypesChanged;
@@ -309,11 +311,11 @@ namespace Detrack.ElasticRoute
         /// <param name="vehicles">Vehicles.</param>
         public static bool ValidateVehicles(List<Vehicle> vehicles)
         {
-            if(vehicles.Count == 0)
+            if (vehicles.Count == 0)
             {
                 throw new BadFieldException("You must have at least one vehicle");
             }
-            foreach(Vehicle vehicle in vehicles)
+            foreach (Vehicle vehicle in vehicles)
             {
                 Predicate<Vehicle> sameNameVehicle = (Vehicle v) => { return v.Name == vehicle.Name; };
                 if (vehicles.FindAll(sameNameVehicle).Count > 1)
@@ -341,17 +343,17 @@ namespace Detrack.ElasticRoute
         public void Absorb(Vehicle other)
         {
             PropertyInfo[] properties = other.GetType().GetProperties();
-            foreach(PropertyInfo property in properties)
+            foreach (PropertyInfo property in properties)
             {
                 PropertyInfo internalProperty = this.GetType().GetProperty(property.Name);
                 object value = property.GetValue(other);
-                if(value != null)
+                if (value != null)
                 {
                     Type internalType = internalProperty.PropertyType;
                     Type internalUnderlyingType = Nullable.GetUnderlyingType(internalType);
                     internalProperty.SetValue(this, Convert.ChangeType(value, internalUnderlyingType ?? internalType), null);
                 }
-                else if(value == null)
+                else if (value == null)
                 {
                     internalProperty.SetValue(this, null, null);
                 }

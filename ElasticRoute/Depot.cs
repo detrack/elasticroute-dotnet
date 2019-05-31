@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Collections.Generic;
-using System.ComponentModel;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
@@ -13,7 +11,7 @@ namespace Detrack.ElasticRoute
     /// </summary>
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy), ItemNullValueHandling = NullValueHandling.Ignore)]
     public class Depot : Detrack.ElasticRoute.Tools.BaseModel
-    {   
+    {
         private string _name;
         private string _address;
         private string _postal_code;
@@ -73,7 +71,7 @@ namespace Detrack.ElasticRoute
             get => _postal_code;
             set
             {
-                if(_postal_code != value)
+                if (_postal_code != value)
                 {
                     NotifyPropertyChanged();
                     _postal_code = value;
@@ -90,7 +88,7 @@ namespace Detrack.ElasticRoute
             get => _lat;
             set
             {
-                if(_lat != value)
+                if (_lat != value)
                 {
                     NotifyPropertyChanged();
                     _lat = value;
@@ -98,7 +96,7 @@ namespace Detrack.ElasticRoute
             }
         }
         /// <summary>
-        //  Gets or sets the longtitude of the depot. Can be used in place of address.
+        /// Gets or sets the longtitude of the depot. Can be used in place of address.
         /// </summary>
         /// <value>The lng.</value>
         public float? Lng
@@ -106,7 +104,7 @@ namespace Detrack.ElasticRoute
             get => _lng;
             set
             {
-                if(_lng != value)
+                if (_lng != value)
                 {
                     NotifyPropertyChanged();
                     _lng = value;
@@ -114,7 +112,7 @@ namespace Detrack.ElasticRoute
             }
         }
         /// <summary>
-        /// Gets or sets whether this depot would be the depot assumed to be where <see cref="Vehicles"/> without a home depot will start from. If there are multiple depots in the same <see cref="Plan"/> marked as default, the first one will be used.
+        /// Gets or sets whether this depot would be the depot assumed to be where <see cref="Vehicle"/> without a home depot will start from. If there are multiple depots in the same <see cref="Plan"/> marked as default, the first one will be used.
         /// </summary>
         /// <value>Whether this depot is the default depot</value>
         public bool? Default
@@ -122,7 +120,7 @@ namespace Detrack.ElasticRoute
             get => _default;
             set
             {
-                if(_default != value)
+                if (_default != value)
                 {
                     NotifyPropertyChanged();
                     _default = value;
@@ -210,17 +208,17 @@ namespace Detrack.ElasticRoute
         public void Absorb(Depot other)
         {
             PropertyInfo[] properties = other.GetType().GetProperties();
-            foreach(PropertyInfo property in properties)
+            foreach (PropertyInfo property in properties)
             {
                 PropertyInfo internalProperty = this.GetType().GetProperty(property.Name);
                 object value = property.GetValue(other);
-                if(value != null)
+                if (value != null)
                 {
                     Type internalType = internalProperty.PropertyType;
                     Type internalUnderlyingType = Nullable.GetUnderlyingType(internalType);
                     internalProperty.SetValue(this, Convert.ChangeType(value, internalUnderlyingType ?? internalType), null);
                 }
-                else if(value == null)
+                else if (value == null)
                 {
                     internalProperty.SetValue(this, null, null);
                 }

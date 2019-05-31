@@ -7,7 +7,10 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 namespace Detrack.ElasticRoute.Tools
 {
-    public abstract class BaseModel : INotifyPropertyChanged 
+    /// <summary>
+    /// Base model used by classes in the <see cref="Detrack.ElasticRoute"/> namespace.
+    /// </summary>
+    public abstract class BaseModel : INotifyPropertyChanged
     {
         /// <summary>
         /// Occurs when property changed.

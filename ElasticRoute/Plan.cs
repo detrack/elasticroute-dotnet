@@ -333,6 +333,11 @@ namespace Detrack.ElasticRoute
             this.SubmittedAt = responseObject["data"]["submitted"].Value<DateTime>();
         }
 
+        /// <summary>
+        /// Retrieves updates and details for a plan with the given <see cref="Plan.Id"/>.
+        /// </summary>
+        /// <exception cref="BadFieldException">Thrown if <see cref="Plan.Id"/> was not yet set before calling this method</exception>
+        /// <exception cref="HttpRequestException">Thrown if the API returns a HTTP status other than 200.</exception>
         public async Task Refresh()
         {
             if (string.IsNullOrWhiteSpace(this.Id))
