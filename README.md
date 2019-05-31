@@ -178,6 +178,6 @@ while(plan.Status != "planned"){
 }
 ```
 
-Setting the `Plan.ConnectionType` to `"Plan.ConnectionTypes.poll"` will cause the server to return you a response immediately after parsing the request data. You can monitor the status with the `Status` and `Progress` properties while fetching updates with the `refresh()` method.
+Setting the `Plan.ConnectionType` to `"Plan.ConnectionTypes.poll"` will cause the server to return you a response immediately after parsing the request data. You can monitor the status with the `Status` and `Progress` properties while fetching updates with the `Plan.Refresh()` method.
 
 In addition, setting the `Plan.ConnectionType` to `"Plan.ConnectionTypes.Webhook"` will also cause the server to post a copy of the response to your said webhook. The exact location of the webhook can be specified with the `Webhook` property of `Plan` objects.
