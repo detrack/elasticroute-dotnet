@@ -18,6 +18,9 @@
         <PackageIconUrl>https://www.elasticroute.com/wp-content/uploads/2019/04/favicon.png</PackageIconUrl>
         <PackageLicenseUrl>https://choosealicense.com/licenses/mit/</PackageLicenseUrl>
         <PackageProjectUrl>https://www.elasticroute.com</PackageProjectUrl>
+        <RepositoryURL>https://github.com/detrack/elasticroute-dotnet</RepositoryURL>
+        <RepositoryType>git</RepositoryType>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <Summary>A .NET library to interface with the ElasticRoute API</Summary>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
