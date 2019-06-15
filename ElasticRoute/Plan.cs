@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Net.Http;
+using System.Threading.Tasks;
+
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 
 [assembly: CLSCompliant(true)]
@@ -360,19 +361,41 @@ namespace Detrack.ElasticRoute
             {
                 Stop receivedStop = stopToken.ToObject<Stop>();
                 Stop internalStop = this.Stops.Find(x => x.Name == receivedStop.Name);
-                internalStop.Absorb(receivedStop);
+                if (internalStop == null)
+                {
+                    this.Stops.Add(receivedStop);
+                }
+                else
+                {
+                    internalStop.Absorb(receivedStop);
+                }
             }
             foreach (JToken vehicleToken in responseObject["data"]["details"]["vehicles"])
             {
                 Vehicle receivedVehicle = vehicleToken.ToObject<Vehicle>();
                 Vehicle internalVehicle = this.Vehicles.Find(x => x.Name == receivedVehicle.Name);
-                internalVehicle.Absorb(receivedVehicle);
+                if (internalVehicle == null)
+                {
+                    this.Vehicles.Add(receivedVehicle);
+                }
+                else
+                {
+                    internalVehicle.Absorb(receivedVehicle);
+                }
             }
             foreach (JToken depotToken in responseObject["data"]["details"]["depots"])
             {
                 Depot receivedDepot = depotToken.ToObject<Depot>();
                 Depot internalDepot = this.Depots.Find(x => x.Name == receivedDepot.Name);
-                internalDepot.Absorb(receivedDepot);
+                if (internalDepot == null)
+                {
+                    this.Depots.Add(receivedDepot);
+                }
+                else
+                {
+
+                    internalDepot.Absorb(receivedDepot);
+                }
 
             }
             this.Progress = responseObject["data"]["progress"].Value<int>();
