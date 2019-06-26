@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <Title>ElasticRoute</Title>
@@ -7,14 +7,14 @@
         <OutputType>Library</OutputType>
         <PackageId>ElasticRoute</PackageId>
         <PackageTags>dotnet;elasticroute;api</PackageTags>
-        <Authors>Detrack Systems, Chester Koh</Authors>
-        <Copyright>Detrack Systems</Copyright>
         <NeutralLanguage>en-US</NeutralLanguage>
         <Owners>Detrack Systems</Owners>
         <RootNamespace>Detrack.ElasticRoute</RootNamespace>
-        <Version>1.0.3</Version>
+        <Version>1.0.4</Version>
+        <PackageReleaseNotes>Addressed an issue where the details async submitted plans cannot be retrieved with just the plan id.</PackageReleaseNotes>
         <Authors>Detrack Systems</Authors>
         <Company>Detrack Systems</Company>
+        <Copyright>Detrack Systems</Copyright>
         <PackageIconUrl>https://www.elasticroute.com/wp-content/uploads/2019/04/favicon.png</PackageIconUrl>
         <PackageLicenseUrl>https://choosealicense.com/licenses/mit/</PackageLicenseUrl>
         <PackageProjectUrl>https://www.elasticroute.com</PackageProjectUrl>
