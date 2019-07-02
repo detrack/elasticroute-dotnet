@@ -83,7 +83,8 @@ Call `Solve()` (returns an awaitable task)
 
 ```csharp
 // solve it immediately
-plan.Solve().Wait();
+// in an asynchronous context
+await plan.Solve();
 
 // store the task somewhere for later, if you have alot of plans to solve at once and want to pool them first
 Task planSolvingTask = plan.Solve();
@@ -171,10 +172,11 @@ By default, all plans are solved in a _synchronous_ manner. Most small to medium
 Plan plan = new Plan("poll_plan")
 plan.ConnectionType = Plan.ConnectionTypes.poll;
 // do the usual stuff
-plan.Solve().Wait();
+// in an asynchronous context
+await plan.Solve();
 while(plan.Status != "planned"){
-    plan.Refresh().Wait();
-    System.Threading.Thread.Sleep(2);
+    await plan.Refresh();
+    await Task.Delay(1000);
 }
 ```
 
