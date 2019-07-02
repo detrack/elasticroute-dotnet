@@ -64,7 +64,7 @@ namespace Tests
             while (testPlan.Status != "planned")
             {
                 await testPlan.Refresh();
-                System.Threading.Thread.Sleep(1000);
+                await Task.Delay(1000);
             }
             Assert.IsNotEmpty(testPlan.Stops.Where(x => !String.IsNullOrEmpty(x.AssignTo)));
         }
