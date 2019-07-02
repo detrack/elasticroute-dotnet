@@ -301,9 +301,9 @@ namespace Detrack.ElasticRoute
             };
             request.Headers.Add("Authorization", $"Bearer {this.ApiKey ?? DefaultApiKey}");
             var responseTask = client.SendAsync(request);
-            HttpResponseMessage responseMessage = await responseTask;
+            HttpResponseMessage responseMessage = await responseTask.ConfigureAwait(false);
             var stringTask = responseMessage.Content.ReadAsStringAsync();
-            string responseString = await stringTask;
+            string responseString = await stringTask.ConfigureAwait(false);
             if (!responseMessage.IsSuccessStatusCode)
             {
                 throw new HttpRequestException($"API Return Code {(int)responseMessage.StatusCode}");
@@ -349,9 +349,9 @@ namespace Detrack.ElasticRoute
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, new Uri(DefaultBaseURI + requestPath));
             request.Headers.Add("Authorization", $"Bearer {this.ApiKey ?? DefaultApiKey}");
             var responseTask = client.SendAsync(request);
-            HttpResponseMessage responseMessage = await responseTask;
+            HttpResponseMessage responseMessage = await responseTask.ConfigureAwait(false);
             var stringTask = responseMessage.Content.ReadAsStringAsync();
-            string responseString = await stringTask;
+            string responseString = await stringTask.ConfigureAwait(false);
             if (!responseMessage.IsSuccessStatusCode)
             {
                 throw new HttpRequestException($"API Return Code {(int)responseMessage.StatusCode}");

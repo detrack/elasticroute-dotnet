@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
 namespace Tests
@@ -28,7 +29,7 @@ namespace Tests
 
 
         [Test]
-        public void SimplePlanTest()
+        public async Task SimplePlanTest()
         {
             Plan plan = new Plan("TestPlan_1234567890");
             Depot mainWarehouse = new Depot("Main Warehouse", "8 Somapah Road");
@@ -38,7 +39,7 @@ namespace Tests
             plan.Depots.Add(mainWarehouse);
             plan.Vehicles.Add(mainVehicle);
             plan.Stops.AddRange(new List<Stop> { stop1, stop2 });
-            plan.Solve().Wait();
+            await plan.Solve();
             Assert.AreEqual("planned", plan.Status);
             Assert.AreEqual(100, plan.Progress);
             Console.WriteLine(plan.Stops[0].Name);
@@ -49,7 +50,7 @@ namespace Tests
         }
 
         [Test]
-        public void TestPoll()
+        public async Task TestPoll()
         {
             string fileData = File.ReadAllText("../../../bigData.json");
             JObject testData = JObject.Parse(fileData);
@@ -62,7 +63,7 @@ namespace Tests
             Assert.AreEqual("submitted", testPlan.Status);
             while (testPlan.Status != "planned")
             {
-                testPlan.Refresh().Wait();
+                await testPlan.Refresh();
                 System.Threading.Thread.Sleep(1000);
             }
             Assert.IsNotEmpty(testPlan.Stops.Where(x => !String.IsNullOrEmpty(x.AssignTo)));
