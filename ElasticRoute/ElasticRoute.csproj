@@ -13,8 +13,8 @@
         <NeutralLanguage>en-US</NeutralLanguage>
         <Owners>Detrack Systems</Owners>
         <RootNamespace>Detrack.ElasticRoute</RootNamespace>
-        <Version>1.0.4</Version>
-        <PackageReleaseNotes>Addressed an issue where the details async submitted plans cannot be retrieved with just the plan id.</PackageReleaseNotes>
+        <Version>1.0.5</Version>
+        <PackageReleaseNotes>Addressed an issue where plans cannot be solved in the context of ASP.NET or WPF applications due to a deadlock</PackageReleaseNotes>
         <Authors>Detrack Systems</Authors>
         <Company>Detrack Systems</Company>
         <Copyright>Detrack Systems</Copyright>
