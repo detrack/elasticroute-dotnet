@@ -1,5 +1,3 @@
-[![License](https://poser.pugx.org/detrack/elasticroute/license)](https://packagist.org/packages/detrack/elasticroute)
-
 # ElasticRoute for .NET (C#)
 
 ![ElasticRoute Logo](http://elasticroute.staging.wpengine.com/wp-content/uploads/2019/02/Elastic-Route-Logo-Text-on-right-e1551344046806.png)
