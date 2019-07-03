@@ -28,3 +28,4 @@ ClientBin
 *.lib
 *.sbr
 .vs
+.idea
