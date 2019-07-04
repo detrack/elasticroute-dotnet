@@ -12,21 +12,24 @@ namespace Tests
     {
         private static Random rng = new Random();
 
-        public Stop CreateStop(string testName = null, [System.Runtime.CompilerServices.CallerMemberName] string memberName = "")
+        public Stop CreateStop(string testName = null, [System.Runtime.CompilerServices.CallerMemberName]
+            string memberName = "")
         {
             string stopName = testName ?? memberName + System.DateTime.Now.Ticks;
             string[] testAddresses =
-            { "61 Kaki Bukit Ave 1 #04-34, Shun Li Ind Park Singapore 417943",
-            "8 Somapah Road Singapore 487372",
-            "80 Airport Boulevard (S)819642",
-            "80 Mandai Lake Road Singapore 729826",
-            "10 Bayfront Avenue Singapore 018956",
-            "18 Marina Gardens Drive Singapore 018953"
+            {
+                "61 Kaki Bukit Ave 1 #04-34, Shun Li Ind Park Singapore 417943",
+                "8 Somapah Road Singapore 487372",
+                "80 Airport Boulevard (S)819642",
+                "80 Mandai Lake Road Singapore 729826",
+                "10 Bayfront Avenue Singapore 018956",
+                "18 Marina Gardens Drive Singapore 018953"
             };
             string stopAddress = testAddresses[rng.Next(testAddresses.Length)];
             Stop stop = new Stop(stopName, stopAddress);
             return stop;
         }
+
         [SetUp]
         public void Setup()
         {
@@ -36,35 +39,23 @@ namespace Tests
         public void TestMustHaveAtLeastTwoStops()
         {
             List<Stop> stops = new List<Stop>();
-            try
-            {
-                Stop.ValidateStops(stops);
-                Assert.Fail("No exception was thrown");
-            }
-            catch (BadFieldException ex)
-            {
-                Assert.AreEqual("You must have at least two stops", ex.Message);
-            }
+            var ex = Assert.Throws<BadFieldException>(() => Stop.ValidateStops(stops));
+            Assert.AreEqual("You must have at least two stops", ex.Message);
         }
 
         [Test]
         public void TestNamesMustBeDistinct()
         {
-            List<Stop> stops = new List<Stop>{
+            List<Stop> stops = new List<Stop>
+            {
                 this.CreateStop(),
                 this.CreateStop("bad"),
                 this.CreateStop("bad")
             };
-            try
+            var ex = Assert.Throws<BadFieldException>(() => Stop.ValidateStops(stops));
+            Assert.AreEqual("Stop name must be distinct", ex.Message);
+            stops = new List<Stop>
             {
-                Stop.ValidateStops(stops);
-                Assert.Fail("No exception was thrown");
-            }
-            catch (BadFieldException ex)
-            {
-                Assert.AreEqual("Stop name must be distinct", ex.Message);
-            }
-            stops = new List<Stop>{
                 this.CreateStop(),
                 this.CreateStop()
             };
@@ -72,33 +63,18 @@ namespace Tests
         }
 
         [Test]
-        public void TestNamesCannotBeNull([Values(null, "", " ")]string testName)
+        public void TestNamesCannotBeNull([Values(null, "", " ")] string testName)
         {
-            try
-            {
-                Stop stop = new Stop("", "");
-                stop.Name = null;
-                Assert.Fail("No exception was thrown");
-            }
-            catch (BadFieldException ex)
-            {
-                Assert.AreEqual("Stop name cannot be null", ex.Message);
-            }
+            var ex = Assert.Throws<BadFieldException>(() => new Stop("", ""));
+            Assert.AreEqual("Stop name cannot be null", ex.Message);
         }
 
         [Test]
         public void TestNamesCannotBeLongerThan255Chars()
         {
             string longName = new string('A', 256);
-            try
-            {
-                Stop stop = new Stop(longName, "");
-                Assert.Fail("No exception was thrown");
-            }
-            catch (BadFieldException ex)
-            {
-                Assert.AreEqual("Stop name cannot be more than 255 chars", ex.Message);
-            }
+            var ex = Assert.Throws<BadFieldException>(() => new Stop(longName, ""));
+            Assert.AreEqual("Stop name cannot be more than 255 chars", ex.Message);
         }
 
         [Test]
@@ -124,34 +100,23 @@ namespace Tests
                 this.CreateStop()
             };
             stops[0].Address = null;
-            try
-            {
-                Stop.ValidateStops(stops);
-                Assert.Fail("No exception was thrown");
-            }catch(BadFieldException ex){
-                Assert.AreEqual("Stop address and coordinates are not given", ex.Message);
-            }
+            var ex = Assert.Throws<BadFieldException>(() => Stop.ValidateStops(stops));
+            Assert.AreEqual("Stop address and coordinates are not given", ex.Message);
         }
 
         [Test]
-        public void TestPositiveNumericFields([Values("WeightLoad", "VolumeLoad", "SeatingLoad")] string field)
+        public void TestPositiveNumericFields([Values("WeightLoad", "VolumeLoad", "SeatingLoad")]
+            string field)
         {
-            float value = -100f; 
+            float value = -100f;
             List<Stop> stops = new List<Stop>
             {
                 this.CreateStop(),
                 this.CreateStop(),
             };
-            try
-            {
-                stops[1].GetType().GetProperty(field).SetValue(stops[1], value);
-                Assert.Fail("No exception was thrown");
-            }
-            catch (TargetInvocationException ex)
-            {
-                Assert.IsInstanceOf(typeof(BadFieldException), ex.InnerException);
-                Assert.AreEqual($"Stop {field} cannot be negative", ex.InnerException.Message);
-            }
+            var ex = Assert.Throws<TargetInvocationException>(() => stops[1].GetType().GetProperty(field).SetValue(stops[1], value));
+            Assert.IsInstanceOf(typeof(BadFieldException), ex.InnerException);
+            Assert.AreEqual($"Stop {field} cannot be negative", ex.InnerException.Message);
         }
     }
 }

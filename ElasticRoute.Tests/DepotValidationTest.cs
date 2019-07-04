@@ -3,30 +3,35 @@ using System.Reflection;
 using Detrack.ElasticRoute;
 using System.Collections.Generic;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Tests
 {
+    [SuppressMessage("ReSharper", "ObjectCreationAsStatement")]
     public class DepotValidationTest
     {
         private static Random rng = new Random();
 
-        public Depot CreateDepot(string testName = null, [System.Runtime.CompilerServices.CallerMemberName] string memberName = "")
+        public Depot CreateDepot(string testName = null, [System.Runtime.CompilerServices.CallerMemberName]
+            string memberName = "")
         {
             string depotName = testName ?? memberName + System.DateTime.Now.Ticks;
             string[] testAddresses =
-            { "61 Kaki Bukit Ave 1 #04-34, Shun Li Ind Park Singapore 417943",
-            "8 Somapah Road Singapore 487372",
-            "80 Airport Boulevard (S)819642",
-            "80 Mandai Lake Road Singapore 729826",
-            "10 Bayfront Avenue Singapore 018956",
-            "18 Marina Gardens Drive Singapore 018953"
+            {
+                "61 Kaki Bukit Ave 1 #04-34, Shun Li Ind Park Singapore 417943",
+                "8 Somapah Road Singapore 487372",
+                "80 Airport Boulevard (S)819642",
+                "80 Mandai Lake Road Singapore 729826",
+                "10 Bayfront Avenue Singapore 018956",
+                "18 Marina Gardens Drive Singapore 018953"
             };
             string depotAddress = testAddresses[rng.Next(testAddresses.Length)];
             Depot depot = new Depot(depotName, depotAddress);
             return depot;
         }
+
         [SetUp]
         public void Setup()
         {
@@ -36,35 +41,23 @@ namespace Tests
         public void TestMustHaveAtLeastOneDepot()
         {
             List<Depot> depots = new List<Depot>();
-            try
-            {
-                Depot.ValidateDepots(depots);
-                Assert.Fail("No exception was thrown");
-            }
-            catch (BadFieldException ex)
-            {
-                Assert.AreEqual("You must have at least one depot", ex.Message);
-            }
+            var ex = Assert.Throws<BadFieldException>(() => Depot.ValidateDepots(depots));
+            Assert.AreEqual("You must have at least one depot", ex.Message);
         }
 
         [Test]
         public void TestNamesMustBeDistinct()
         {
-            List<Depot> depots = new List<Depot>{
+            List<Depot> depots = new List<Depot>
+            {
                 this.CreateDepot(),
                 this.CreateDepot("bad"),
                 this.CreateDepot("bad")
             };
-            try
+            var ex = Assert.Throws<BadFieldException>(() => Depot.ValidateDepots(depots));
+            Assert.AreEqual("Depot name must be distinct", ex.Message);
+            depots = new List<Depot>
             {
-                Depot.ValidateDepots(depots);
-                Assert.Fail("No exception was thrown");
-            }
-            catch (BadFieldException ex)
-            {
-                Assert.AreEqual("Depot name must be distinct", ex.Message);
-            }
-            depots = new List<Depot>{
                 this.CreateDepot(),
                 this.CreateDepot()
             };
@@ -72,32 +65,18 @@ namespace Tests
         }
 
         [Test]
-        public void TestNamesCannotBeNull([Values(null, "", " ")]string testName)
+        public void TestNamesCannotBeNull([Values(null, "", " ")] string testName)
         {
-            try
-            {
-                Depot depot = new Depot(null, "8 Somapah Road");
-                Assert.Fail("No exception was thrown");
-            }
-            catch (BadFieldException ex)
-            {
-                Assert.AreEqual("Depot name cannot be null", ex.Message);
-            }
+            var ex = Assert.Throws<BadFieldException>(() => new Depot(null, "8 Somapah Road"));
+            Assert.AreEqual("Depot name cannot be null", ex.Message);
         }
 
         [Test]
         public void TestNamesCannotBeLongerThan255Chars()
         {
             string longName = new string('A', 256);
-            try
-            {
-                Depot depot = new Depot(longName, "8 Somapah Road");
-                Assert.Fail("No exception was thrown");
-            }
-            catch (BadFieldException ex)
-            {
-                Assert.AreEqual("Depot name cannot be more than 255 chars", ex.Message);
-            }
+            var ex = Assert.Throws<BadFieldException>(() => new Depot(longName, "8 Somapah Road"));
+            Assert.AreEqual("Depot name cannot be more than 255 chars", ex.Message);
         }
 
         [Test]
@@ -122,13 +101,8 @@ namespace Tests
                 this.CreateDepot()
             };
             depots[0].Address = null;
-            try
-            {
-                Depot.ValidateDepots(depots);
-                Assert.Fail("No exception was thrown");
-            }catch(BadFieldException ex){
-                Assert.AreEqual("Depot address and coordinates are not given", ex.Message);
-            }
+            var ex = Assert.Throws<BadFieldException>(() => Depot.ValidateDepots(depots));
+            Assert.AreEqual("Depot address and coordinates are not given", ex.Message);
         }
     }
 }
