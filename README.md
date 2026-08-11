@@ -1,3 +1,15 @@
+> ## ⚠️ Archived
+>
+> This repository was archived on **2026-08-11** and is now **read-only**.
+>
+> Last commit to the default branch: **2020-12-04** — 5.7 years before archiving. It was archived as part of an organisation-wide review of dormant
+> repositories. No further changes will be made here.
+>
+> The code remains available to clone and fork. An organisation owner can
+> restore write access via *Settings → General → Danger Zone → Unarchive*.
+
+---
+
 # ElasticRoute for .NET (C#)
 
 ![ElasticRoute Logo](http://elasticroute.staging.wpengine.com/wp-content/uploads/2019/02/Elastic-Route-Logo-Text-on-right-e1551344046806.png)
